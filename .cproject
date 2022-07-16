@@ -47,6 +47,8 @@
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/LCD/Configurations}&quot;"/>
                                     									
+                                    <listOptionValue builtIn="false" value="&quot;${workspace_loc:/LCD/LCD}&quot;"/>
+                                    									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/LCD/Libraries}&quot;"/>
                                     									
                                     <listOptionValue builtIn="false" value="&quot;${workspace_loc:/LCD/Libraries/Infra}&quot;"/>

@@ -46,6 +46,7 @@ int core0_main(void)
     
     while(1)
     {
+
     }
     return (1);
 }
