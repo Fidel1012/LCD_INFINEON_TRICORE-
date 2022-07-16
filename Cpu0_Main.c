@@ -27,6 +27,7 @@
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
+#include "LCD.h"
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 
