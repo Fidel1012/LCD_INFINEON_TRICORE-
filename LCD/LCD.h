@@ -117,6 +117,9 @@ typedef struct _LCD{
         LCD_PIN *DB5;
         LCD_PIN *DB6;
         LCD_PIN *DB7;
+
+        uint8 col;
+        uint8 row;
 }LCD;
 
 
@@ -127,6 +130,31 @@ typedef struct _LCD{
 /*********************************************************************************************************************/
 /*------------------------------------------------Function Prototypes------------------------------------------------*/
 /*********************************************************************************************************************/
+
+/*
+ * @LCD_ClearScreen
+ * @brief: Clear display´s data and put set cursor position 0.
+ * @param: LCD_struct pointer to structure @ref LCD.
+ */
+void LCD_ClearScreen(LCD *LCD_Struct);
+
+/*
+ * @LCD_Home
+ * @brief: Bring the cursor to the top left position.
+ * @param: LCD_struct pointer to structure @ref LCD.
+ */
+void LCD_Home(LCD *LCD_Struct);
+
+/*
+ * @LCD_SetCursor
+ * @brief: Move the cursor to a specific position.
+ *         If @col excedds 0x4F, i.e., the last column of 2nd line, then
+ *         it is reset to 0x00, i.e., the 1st column of the 1st line.
+ * @param: LCD_struct pointer to structure @ref LCD.
+ * @param: Number of column, must be positive a less than 16. It´s set to 0 if these condition are no guaranteed.
+ * @param: Number of row, must be positive 1 or 2.
+ */
+void LCD_SetCursor(LCD *LCD_Struct, uint8 col, uint8 row);
 
 
 #endif /* LCD_LCD_H_ */

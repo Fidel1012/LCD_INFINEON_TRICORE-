@@ -78,11 +78,77 @@ static void LCD_Write_4bits(uint8 data)
     LCD_Enable();
 }
 
+/*
+ * @LCD_Send_command
+ * @brief: With RS = 0, RW = 0 a command byte is sent.
+ */
+static void LCD_Send_command(uint8 cmd)
+{
+    IfxPort_setPinState(_LCD->RS->port, _LCD->RS->pinIndex, IfxPort_State_low);
+    IfxPort_setPinState(_LCD->RW->port, _LCD->RW->pinIndex, IfxPort_State_low);
 
-/*********************************************************************************************************************/
-/*------------------------------------------------Function Prototypes------------------------------------------------*/
-/*********************************************************************************************************************/
+    LCD_Write_4bits(cmd>>4);
+    LCD_Write_4bits(cmd);
+}
+
+/*
+ * @LCD_Send_data
+ * @brief: With RS = 1, RW = 0 a data byte is sent.
+ */
+static void LCD_Send_data(uint8 data)
+{
+    IfxPort_setPinState(_LCD->RS->port, _LCD->RS->pinIndex, IfxPort_State_high);
+    IfxPort_setPinState(_LCD->RW->port, _LCD->RW->pinIndex, IfxPort_State_low);
+
+    LCD_Write_4bits(data>>4);
+    LCD_Write_4bits(data);
+}
 
 /*********************************************************************************************************************/
 /*---------------------------------------------Function Implementations----------------------------------------------*/
 /*********************************************************************************************************************/
+
+void LCD_ClearScreen(LCD *LCD_Struct)
+{
+    _LCD = LCD_Struct;
+    LCD_Send_command(LCD_CLEARDISPLAY);
+    LCD_Delay_ms(1);
+}
+
+void LCD_Home(LCD *LCD_Struct)
+{
+    _LCD = LCD_Struct;
+    LCD_Send_command(LCD_RETURNHOME);
+    LCD_Delay_ms(1);
+    LCD_Struct->col = 0;
+    LCD_Struct->row = 0;
+}
+
+void LCD_SetCursor(LCD *LCD_Struct, uint8 col, uint8 row)
+{
+    _LCD = LCD_Struct;
+    uint8 temp_col;
+
+    if((col > 16) | (col < 0))
+    {
+        col = 0;
+    }
+
+    if((row > 2) | (col < 1))
+    {
+        col = 1;
+    }
+
+    temp_col = col;
+
+    if(row == 2)
+    {
+        temp_col += 0X40U;
+    }
+
+    LCD_Send_command(LCD_SETDDRAMADDR | temp_col);
+    LCD_Delay_ms(1);
+    LCD_Struct->col = col;
+    LCD_Struct->row = row;
+
+}
