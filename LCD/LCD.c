@@ -13,11 +13,19 @@
 /*-----------------------------------------------------Includes------------------------------------------------------*/
 /*********************************************************************************************************************/
 #include "LCD.h"
+#include <Stm/Std/IfxStm.h>
 
 /*********************************************************************************************************************/
 /*-------------------------------------------------------Macros------------------------------------------------------*/
 /*********************************************************************************************************************/
 
+/*STM Module uses to generate a delay function*/
+#define STM             &MODULE_STM0
+
+/*This macro set the state of a pin
+ * if arg > 0, the pin will be high
+ * if arg = 0, the pin will be low
+ */
 #define STATE(arg)  ((arg) ? IfxPort_State_high : IfxPort_State_low)
 
 /*********************************************************************************************************************/
@@ -35,8 +43,31 @@ static LCD * _LCD = NULL;
 /*********************************************************************************************************************/
 
 /*
- * @Write on the LCD
- * @brief: Function to write 4 bits on the LCD
+ * @LCD_delay_ms.
+ * @brief Low-level function to delay in ms.
+ */
+static void LCD_Delay_ms(uint32_t time_ms)
+{
+    sint32 delay_ms = IfxStm_getTicksFromMilliseconds(STM, time_ms);
+    IfxStm_waitTicks(STM, delay_ms);
+}
+
+/*
+ * @LCD_Enable
+ * @brief: Function to enable the LCD.
+ */
+static void LCD_Enable(void)
+{
+    IfxPort_setPinHigh(_LCD->E->port,_LCD->E->pinIndex);
+    LCD_Delay_ms(1);
+    IfxPort_setPinLow(_LCD->E->port,_LCD->E->pinIndex);
+    LCD_Delay_ms(1);
+    IfxPort_setPinHigh(_LCD->E->port,_LCD->E->pinIndex);
+}
+
+/*
+ * @LCD_Write_4bits.
+ * @brief: Function to write 4 bits on the LCD.
  */
 static void LCD_Write_4bits(uint8 data)
 {
@@ -44,7 +75,9 @@ static void LCD_Write_4bits(uint8 data)
     IfxPort_setPinState(_LCD->DB5->port,_LCD->DB5->pinIndex, STATE(data & 0X02U));
     IfxPort_setPinState(_LCD->DB6->port,_LCD->DB6->pinIndex, STATE(data & 0X04U));
     IfxPort_setPinState(_LCD->DB7->port,_LCD->DB7->pinIndex, STATE(data & 0X08U));
+    LCD_Enable();
 }
+
 
 /*********************************************************************************************************************/
 /*------------------------------------------------Function Prototypes------------------------------------------------*/
