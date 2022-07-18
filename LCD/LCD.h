@@ -7,7 +7,6 @@
  * \author  Fidel
  *********************************************************************************************************************/
 
-
 #ifndef LCD_LCD_H_
 #define LCD_LCD_H_
 
@@ -17,10 +16,6 @@
 
 #include "stdint.h"
 #include "IfxPort.h"
-
-/*********************************************************************************************************************/
-/*------------------------------------------------------Macros-------------------------------------------------------*/
-/*********************************************************************************************************************/
 
 /*********************************************************************************************************************/
 /*-----------------------------------------------------Defines-------------------------------------------------------*/
@@ -78,12 +73,8 @@
 #define LCD_FUNCTION_FONT_5X11  0X04U   //5x11 dot format display mode.
 #define LCD_FUNCTION_LINES_1    0X00U   //1 line display mode.
 #define LCD_FUNCTION_LINES_2    0X08U   //2 lines display mode.
-#define LCD_FUCNTION_LENGTH_4   0X00U   //4-Bit bus mode with MPU.
+#define LCD_FUNCTION_LENGTH_4   0X00U   //4-Bit bus mode with MPU.
 #define LCD_FUNCTION_LENGTH_8   0X10U   //8-Bit bus mode with MPU.
-
-/*********************************************************************************************************************/
-/*-------------------------------------------------Global variables--------------------------------------------------*/
-/*********************************************************************************************************************/
 
 /*********************************************************************************************************************/
 /*-------------------------------------------------Data Structures---------------------------------------------------*/
@@ -124,12 +115,13 @@ typedef struct _LCD{
 
 
 /*********************************************************************************************************************/
-/*--------------------------------------------Private Variables/Constants--------------------------------------------*/
-/*********************************************************************************************************************/
-
-/*********************************************************************************************************************/
 /*------------------------------------------------Function Prototypes------------------------------------------------*/
 /*********************************************************************************************************************/
+
+/*
+ *
+ */
+void LCD_Begin(LCD *LCD_Struct);
 
 /*
  * @LCD_ClearScreen
@@ -155,6 +147,36 @@ void LCD_Home(LCD *LCD_Struct);
  * @param: Number of row, must be positive 1 or 2.
  */
 void LCD_SetCursor(LCD *LCD_Struct, uint8 col, uint8 row);
+
+/*
+ * @LCD_PutChar
+ * @brief: Put a char on the cursor.
+ * @param: LCD_struct pointer to structure @ref LCD.
+ * @param: Character to be put on the cursor.
+ */
+void LCD_PutChar(LCD *LCD_Struct, uint8 c);
+
+/*
+ * @LCD_PutStr
+ * @brief: Put a string of chars from the current cursor position.
+ * @param: LCD_struct pointer to structure @ref LCD.
+ * @param: String to be put on the cursor.
+ */
+void LCD_PutStr(LCD *LCD_Struct, uint8 *s);
+
+/*
+ * @LCD_Send_command
+ * @brief: With RS = 0, RW = 0 a command byte is sent.
+ * @param: Command to be sent.
+ */
+void LCD_Send_command(uint8 cmd);
+
+/*
+ * @LCD_Send_data
+ * @brief: With RS = 1, RW = 0 a data byte is sent.
+ * @param: Byte data to be sent.
+ */
+void LCD_Send_data(uint8 data);
 
 
 #endif /* LCD_LCD_H_ */
