@@ -28,17 +28,7 @@
 #include "IfxCpu.h"
 #include "IfxScuWdt.h"
 #include "LCD.h"
-
-#define PIN_E   &MODULE_P15,3
-#define PIN_RS  &MODULE_P15,2
-#define PIN_RW  &MODULE_P02,0
-#define PIN_DB4 &MODULE_P02,1
-#define PIN_DB5 &MODULE_P10,4
-#define PIN_DB6 &MODULE_P02,3
-#define PIN_DB7 &MODULE_P02,5
-
-
-void pin_init(void);
+#include "LCD_PINSET.h"
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 
@@ -67,7 +57,7 @@ int core0_main(void)
     IfxCpu_emitEvent(&g_cpuSyncEvent);
     IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
     
-    pin_init();
+    Pin_LCD_init();
 
     //LCD Init
     LCD *Lcd = LCD_Init(&E, &RS, &RW, &DB4, &DB5, &DB6, &DB7);
@@ -75,11 +65,13 @@ int core0_main(void)
     //LCD Begin
     LCD_Begin(Lcd);
 
+    //LCD Clear Screen
     LCD_ClearScreen(Lcd);
 
-    //LCD SetCursor
+    //LCD Set Cursor
     LCD_SetCursor(Lcd, 0, 0);
 
+    //LCD Put String
     LCD_PutStr(Lcd, string);
 
     while(1)
@@ -89,13 +81,3 @@ int core0_main(void)
     return (1);
 }
 
-void pin_init(void)
-{
-    IfxPort_setPinModeOutput(PIN_E, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
-    IfxPort_setPinModeOutput(PIN_RS, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
-    IfxPort_setPinModeOutput(PIN_RW, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
-    IfxPort_setPinModeOutput(PIN_DB4, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
-    IfxPort_setPinModeOutput(PIN_DB5, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
-    IfxPort_setPinModeOutput(PIN_DB6, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
-    IfxPort_setPinModeOutput(PIN_DB7, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
-}
