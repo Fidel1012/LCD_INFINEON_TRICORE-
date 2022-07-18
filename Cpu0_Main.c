@@ -29,7 +29,29 @@
 #include "IfxScuWdt.h"
 #include "LCD.h"
 
+#define PIN_E   &MODULE_P15,3
+#define PIN_RS  &MODULE_P15,2
+#define PIN_RW  &MODULE_P02,0
+#define PIN_DB4 &MODULE_P02,1
+#define PIN_DB5 &MODULE_P10,4
+#define PIN_DB6 &MODULE_P02,3
+#define PIN_DB7 &MODULE_P02,5
+
+
+void pin_init(void);
+
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+LCD_PIN E = {.port = &MODULE_P15, .pinIndex = 3};
+LCD_PIN RS = {.port = &MODULE_P15, .pinIndex = 2};
+LCD_PIN RW = {.port = &MODULE_P02, .pinIndex = 0};
+LCD_PIN DB4 = {.port = &MODULE_P02, .pinIndex = 1};
+LCD_PIN DB5 = {.port = &MODULE_P10, .pinIndex = 4};
+LCD_PIN DB6 = {.port = &MODULE_P02, .pinIndex = 3};
+LCD_PIN DB7 = {.port = &MODULE_P02, .pinIndex = 5};
+
+uint8 string[] = "HELLO WORLD";
+
 
 int core0_main(void)
 {
@@ -45,9 +67,35 @@ int core0_main(void)
     IfxCpu_emitEvent(&g_cpuSyncEvent);
     IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
     
+    pin_init();
+
+    //LCD Init
+    LCD *Lcd = LCD_Init(&E, &RS, &RW, &DB4, &DB5, &DB6, &DB7);
+
+    //LCD Begin
+    LCD_Begin(Lcd);
+
+    LCD_ClearScreen(Lcd);
+
+    //LCD SetCursor
+    LCD_SetCursor(Lcd, 0, 0);
+
+    LCD_PutStr(Lcd, string);
+
     while(1)
     {
 
     }
     return (1);
+}
+
+void pin_init(void)
+{
+    IfxPort_setPinModeOutput(PIN_E, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(PIN_RS, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(PIN_RW, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(PIN_DB4, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(PIN_DB5, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(PIN_DB6, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinModeOutput(PIN_DB7, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
 }
